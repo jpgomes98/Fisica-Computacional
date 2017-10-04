@@ -1,0 +1,18 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <iostream>
+#include <fstream>
+#include <cmath>
+
+
+using namespace std;
+
+int main()
+{
+  ofstream outFile("function.dat");
+
+  
+  outFile.close();
+  return 0;
+}
