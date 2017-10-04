@@ -1,0 +1,13 @@
+
+
+Método Metropolis Monte Carlo
+
+1) Queremos que:
+
+densidade_prob(x) = nº pontos da nuvem/(unidade de hipervolume)
+
+2) Gerar configurações tal que isto seja possivel;
+3) Seguir o algoritmo.
+
+
+
