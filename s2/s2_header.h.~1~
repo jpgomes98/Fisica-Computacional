@@ -1,0 +1,1 @@
+double wavefunc(double x);  // alpha = 1, N = 1/(pow((M_PI), 1/4))
