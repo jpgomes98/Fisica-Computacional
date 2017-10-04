@@ -118,6 +118,26 @@ int main()
       cin >> r;
       cout << endl;
 
+      /*Alocar*/
+
+      matrix_MC = new(nothrow) double*[n_confs];
+      if(!(matrix_MC))
+	{
+	  cout << "Erro na alocação!" << endl;
+	  return 1;
+	}
+
+      for (int i = 0; i < n_confs; i++)
+	{
+	  matrix_MC[i] = new(nothrow) double[2];
+	  if(!(matrix_MC[i]))
+	    {
+	      cout << "Erro na alocação!" << endl;
+	      return 1;
+	    }
+	}
+
+
       confs_markov = markov(ro, a, n_confs, markovs, r);
 
       cout << " Estas são as configurações geradas: \n" << endl;
@@ -125,6 +145,7 @@ int main()
       for (int i = 0; i < n_confs; i++)
 	{
 	  cout << " " << confs_markov[i];
+	  matrix_MC[i][0] = confs_markov[i];
 	  if ((i % 5) == 0)
 	    {
 	      cout << endl;
@@ -133,7 +154,12 @@ int main()
 	}
       cout << endl;
 
-      integral_montecarlo = integra_montecarlo(confs_markov, n_confs, func);
+      integral_montecarlo = integra_montecarlo(confs_markov, matrix_MC, n_confs, func);
+
+      for (int i = 0; i < n_confs; i++)
+	{
+	  output << " " << matrix_MC[i][0] << " " << matrix_MC[i][1] << endl;
+	}
       cout << "O integral definido de " << -a << " até " << a << " da função escolhida é " << integral_montecarlo << " utilizando o Método de Metropolis Monte Carlo." << endl;
     }
 
@@ -213,5 +239,7 @@ int main()
   */
   
   delete[] confs_markov;
+  for (int i = 0; i < n_confs; i++) delete[] matrix_MC[i];
+  delete[] matrix_MC;
   return 0;
 }

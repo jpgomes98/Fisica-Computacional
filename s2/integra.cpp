@@ -133,13 +133,14 @@ double *markov(double (*pdf)(double x), double a, int n_conf, int m, double r)
   return confs;
 }
 
-double integra_montecarlo(double *confs, int n, double (*f)(double x))
+double integra_montecarlo(double *confs, double **mat, int n, double (*f)(double x))
 {
   double sum = 0;
   
   for (int i = 0; i < n; i++)
     {
-      sum += (*f)(confs[i]);
+      mat[i][1] = (*f)(confs[i]);
+      sum += mat[i][1];
     }
   return sum / n;
 }
