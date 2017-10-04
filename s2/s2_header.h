@@ -15,5 +15,5 @@ double integra_rect(double a, double b, int N, double (*f)(double x));
 double integra_trap(double a, double b, int N, double (*f)(double x));
 double integra_simp(double a, double b, int N, double (*f)(double x));
 double *markov(double (*pdf)(double x), double a, int n_conf, int m, double r);
-double integra_montecarlo(double *confs, int n, double (*f)(double x));
+double integra_montecarlo(double *confs, double **mat, int n, double (*f)(double x));
 
