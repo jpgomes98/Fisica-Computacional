@@ -12,7 +12,8 @@ void coisa() {
 	}
 
 namespace meuespaco {
-	
+
+  
 	void coisa() {
 		std::cout << "meuespaco::coisa()" << std::endl; // o cout e o endl estao no namespace std,
         // nota: foi o iostream que acrescentou cout, cin e endl ao namespace std
