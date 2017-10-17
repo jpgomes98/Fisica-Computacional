@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <cmath>
 #include <fstream>
@@ -190,19 +189,15 @@ int main()
   cin >> x0;
   
   //cout << (*func)(x0) << endl;
-
   cout << "x máximo: " << endl;
   cin >> x_max;
-
   n_i = (int)((x_max - x0)/step);
-
   mat = new(nothrow) double*[n_i];
   if(!(mat))
     {
       cout << "Erro na alocação!" << endl;
       return 1;
     }
-
   for (int i = 0; i < n_i; i++)
     {
       mat[i] = new double[n_j];
@@ -213,14 +208,12 @@ int main()
 	}
     }
   x = x0;
-
   for (int i = 0; i < n_i; i++)
     {
       mat[i][0] = x;
       mat[i][1] = (*func)(x);
       x += step;
     }
-
   for (int i = 0; i < n_i; i++)
     {
       for (int j = 0; j < n_j; j++)
@@ -231,7 +224,6 @@ int main()
       cout << "\n";
       output << "\n";
     }
-
   // DESALOCAR
   
   for (int i = 0; i < n_i; i++) delete[] mat[i];
