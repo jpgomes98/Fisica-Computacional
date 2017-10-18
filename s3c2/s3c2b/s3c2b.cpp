@@ -15,12 +15,12 @@ void RungeKutta(double N1, double h, double tf, double lbd)
   
   while( t <= tf)
     {
-      k1 = lbd*N1;
-      k2 = lbd*(N1 + 0.5*h*k1);
-      k3 = lbd*(N1 + 0.5*h*k2);
-      k4 = lbd*(N1 + h*k3);  
+      k1 = -lbd*N1;
+      k2 = -(lbd*N1 + 0.5*h*k1);
+      k3 = -(lbd*N1 + 0.5*h*k2);
+      k4 = -(lbd*N1 + h*k3);  
 
-      N2 = N1 - (1/6)*h*(k1 +2*k2 + 2*k3 + k4);
+      N2 = N1 + (double)(h/6)*(k1 +2*k2 + 2*k3 + k4);
 
       outKutta << t << " " << N1 << " " << endl;
 
@@ -50,7 +50,7 @@ void Euler(double N1, double h, double tf, double lbd)
 int main() 
 { 
   double N0, N1, tf, lbd;
-  double h=0.01;
+  double h=0.3;
 
   cout << "Insira os valores da constante de decaimento " << endl;
   cin >> lbd;
