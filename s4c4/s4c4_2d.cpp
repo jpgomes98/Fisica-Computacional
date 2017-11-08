@@ -3,6 +3,8 @@
 #include <cmath>
 #include <cstdlib>
 
+#define GNUPLOT_ROT "gnuplot gnuplot_rotate_graph.plt"
+
 using namespace std;
 
 /* Eq. Poisson, D = 2*/
@@ -20,7 +22,7 @@ double norma (double *A, int n) // terá de ser uma norma matricial
 
 double chargeDens (double x, double y) // função densidade de carga
 {
-  return sin(x);
+  return sin(x * y);
 }
 
 double poisson_2d (double u_x0, double u_x2, double u_y0, double u_y2, double h[2], double a1, double b1, int i, int j)
@@ -32,7 +34,7 @@ double poisson_2d (double u_x0, double u_x2, double u_y0, double u_y2, double h[
 
 int main ()
 {
-  int nmax = 100000;
+  int nmax = 1000;
   int npos = 100;
   
   double a1, a2, b1, b2;
@@ -139,6 +141,8 @@ int main ()
     }
 
   cout << "Obteve-se a melhor solução para a eq. de Poisson após " << it << " iteradas." << endl;
+
+  system(GNUPLOT_ROT);
 
   return 0;
 }
