@@ -1,0 +1,46 @@
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <cstdlib>
+
+using namespace std;
+
+/* Caso particular Eq. Poisson, D = 1*/
+
+double density (double x)
+{
+  return sin(x);
+}
+
+int main ()
+{
+  int nmax = 100000;
+  double h = 0.1;
+  double U0, dU0;
+  double U2, U1;
+
+  double x0, x1;
+
+  ofstream output ("Poisson_1d.dat");
+
+  x0 = 0;
+
+  cout << "Especifique as condições fronteira do problema (U(0) e U'(0)): " << endl;
+  cin >> U0;
+  cin >> dU0;
+
+  U1 = U0 + h * dU0;
+  x1 = x0;
+  
+  for (int i = 0; i < nmax; i++)
+    {
+      U2 = 2 * U1 - U0 - h * h * density(x1); // eps_0 = 1
+      x1 += h;
+      U1 = U2;
+      U0 = U1;
+      output << x1 << " " << U2 << endl;
+      cout << x1 << " " << U2 << endl;
+    }
+
+  return 0;
+}

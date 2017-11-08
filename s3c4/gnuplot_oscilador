@@ -7,7 +7,7 @@
 
 set term x11 
 set macros
-style1 = "lines lt 6 lw 3 title \"Euler\""
+style1 = "lines lt 6 lw 3 title \"Solucao Analitica\""
 style2 = "lines lt 5 lw 2 title \"Runge-Kutta\""
 style3 = "lines lt 1 lw 2 title \"Numerov\""
 range1 = "using 1:2"
@@ -16,7 +16,7 @@ range1 = "using 1:2"
 
 #plot "Oscilador_Euler.dat" @range1 with @style1
 
-plot "Oscilador_Euler.dat" @range1 with @style1, "Oscilador_Kutta.dat" @range1 with @style2, "Oscilador_Numerov.dat" @range1 with @style3
+plot "Solucao_Analitica.dat" @range1 with @style1, "Oscilador_Kutta.dat" @range1 with @style2, "Oscilador_Numerov.dat" @range1 with @style3
 
 #pause -1
 pause mouse button3,keypress

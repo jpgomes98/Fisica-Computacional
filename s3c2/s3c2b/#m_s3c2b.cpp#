@@ -1,0 +1,70 @@
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <cstdlib>
+
+using namespace std;
+
+void RungeKutta(double N1, double h, double tf, double lbd)
+{
+  double k1, k2, k3, k4;
+  double t=0;
+  double N2;
+  
+  ofstream outKutta ("Kutta.dat");
+   
+  while( t <= tf)
+    {
+      k1 = -lbd*N1;
+      k2 = -(lbd*N1 + 0.5*h*k1);
+      k3 = -(lbd*N1 + 0.5*h*k2);
+      k4 = -(lbd*N1 + h*k3);  
+
+      N2 = N1 + (double)(h/6)*(k1 +2*k2 + 2*k3 + k4);
+
+      outKutta << t << " " << N1 << " " << endl;
+
+      N1=N2;
+      t += h;
+    }
+}
+
+void Euler(double N1, double h, double tf, double lbd)
+{
+  double t=0;
+  double N2;
+
+  ofstream outEuler ("Euler.dat");
+  
+  while(t<=tf)
+    {
+      N2= N1 - lbd*N1*h;
+
+      outEuler<< t << " " << N1 << " " << endl;
+
+      N1 = N2;
+      t += h;
+    }
+}
+
+int main() 
+{ 
+  double N0, N1, tf, lbd;
+  double h=0.3;
+
+  cout << "Insira os valores da constante de decaimento " << endl;
+  cin >> lbd;
+  cout << "Introduza o valor inicial de N" << endl;
+  cin >> N0;
+  cout << "Introduza o tempo final" << endl;
+  cin >> tf;
+
+  N1=N0;
+  
+  Euler(N1, h, tf, lbd);
+  RungeKutta(N1, h, tf, lbd);
+
+  return 0;
+
+
+}

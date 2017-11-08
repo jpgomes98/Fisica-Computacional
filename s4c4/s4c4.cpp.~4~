@@ -1,0 +1,68 @@
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <cstdlib>
+
+using namespace std;
+
+/* Caso particular Eq. Poisson, D = 1*/
+
+double poisson_1d (double u0, double u2, double h)
+{
+  double u1 = 0;
+  double dens = 0;
+  u1 = (u2 + u0)/(2.) - (h * h * dens)/ (2.);
+  return u1;
+}
+
+int main ()
+{
+  int nmax = 10000;
+  int npos = 1000;
+  double a, b;
+  double Ua, Ub;
+  double U[npos];
+  double h;
+  double x;
+
+  int j = 1;
+
+  ofstream output ("Poisson_1d.dat");
+
+  cout << "Especifique as posições fronteira do problema a, b:" << endl;
+  cin >> a;
+  cin >> b;
+
+  cout << "Especifique as condições fronteira do problema (U(a) e U(b)): " << endl;
+  cin >> Ua;
+  cin >> Ub;
+
+  h =  ((b - a)/ (double) (npos));
+  U[0] = Ua;
+  U[npos - 1] = Ub;
+
+  for (int i = 1; i < (npos - 1); i++)
+    {
+      U[i] = 0;
+    }
+  
+  for (int i = 0; i < nmax; i++)
+    {
+      for (j = 1; j < (npos - 1); j++)
+	{
+	  U[j] = poisson_1d(U[j-1], U[j+1], h);
+	}
+      j = 1;
+    }
+  
+  x = a;
+
+  for (int i = 0; i < npos; i++)
+    {
+      output << x << " " << U[i] << endl;
+      cout << x << " " << U[i] << endl;
+      x += h;
+    }
+
+  return 0;
+}
