@@ -21,6 +21,7 @@ class Space{
   double ch2[2];
   /* Valor das cargas */
   double q;
+  double eps0;
   
 public:
   double **U, **V;
@@ -39,7 +40,7 @@ public:
   double chargeDens();
   double poisson_2d (double u_x0, double u_x2, double u_y0, double u_y2, double a1, double b1, int i, int j);
 
-  /* Friends */
+  /* Amizades */
   
   friend double normaV (double *A, int n);
 
@@ -47,15 +48,13 @@ public:
 
 Space::Space(size_t n): npos(n)
 {
-
-  cout << "Passei aqui 1" << endl;
   
   U = new double*[npos];
   V = new double*[npos];
-  q = 0;
-
-  cout << "Passei aqui 2" << endl;
   
+  q = 0;
+  eps0 = 8.854e-12;
+
   for (int i = 0; i < npos; i++)
     {
       U[i] = new double[npos];
@@ -65,8 +64,6 @@ Space::Space(size_t n): npos(n)
   ch1[1] = 30;
   ch2[0] = 10;
   ch2[1] = 10;
-
-  cout << "Passei aqui 3" << endl;
 
 }
 
@@ -192,17 +189,14 @@ double Space::poisson_2d (double u_x0, double u_x2, double u_y0, double u_y2, do
   
   double u1 = 0;
   
-  u1 = (u_x0 + u_x2 + u_y0 + u_y2)/(4.) - ((normaV(h, 2) * normaV(h, 2)) * chargeDens())/ (4.);
+  u1 = (u_x0 + u_x2 + u_y0 + u_y2)/(4.) + /*((normaV(h, 2) * normaV(h, 2)) **/ chargeDens()/(eps0 * 4.);
   return u1;
 }
 
 
-
-
-
 int main ()
 {
-  Space Potencial(40);
+  Space Potencial(100);
   /* Definir as fronteiras */
   double a1, a2, b1, b2;
   double Ux_a1, Ux_a2, Uy_b1, Uy_b2;
@@ -232,7 +226,7 @@ int main ()
   Potencial.setup(Ux_a1, Ux_a2, Uy_b1, Uy_b2);
   Potencial.equi_referencial(a1, a2, b1, b2);
 
-  while (tol > 1e-8)
+  while (tol > 1e-9)
     {
       for (i = 1; i < (Potencial.size() - 1); i++)
 	{
