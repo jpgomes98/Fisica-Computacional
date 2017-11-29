@@ -51,7 +51,7 @@ size_t Vector::size() const
   return length;
 }
 
-/* Função que imprime a componente i do vetor */
+/* Função Que Imprime A Componente I Do Vetor */
 
 double Vector::get(size_t i) const
 {
