@@ -14,6 +14,8 @@ public:
   double h1;
   double p;
   void poison(int, int);
+
+  friend double normaV (double *mat, int n_pos);
 };
 
 Poison_2d::Poison_2d()  
@@ -35,7 +37,19 @@ void Poison_2d::poison (int i, int j)
     }
 
   mat[i][j] = (mat[i-1][j]+mat[i+1][j]+mat[i][j+1]+mat[i][j-1] + h1*h1*p)/4.;
-} 
+}
+
+
+double normaV (double *mat, int &n_pos) // norma vetorial
+{
+  double s = 0;
+  for (int i = 0; i < n_pos; i++)
+    {
+      s += mat[i] * mat[i];
+    }
+
+  return sqrt(s);
+}
 
 
 int main ()
@@ -75,7 +89,7 @@ int main ()
       P2d.mat[P2d.n_pos-1][v]=v_4;
     }
     
-  while(d<10000)
+  while(normaV<0.001)
     {
       for(int i1=1; i1<P2d.n_pos-1; i1++)
       {
