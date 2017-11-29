@@ -1,0 +1,193 @@
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+#include "Matrix.h"
+
+using namespace std;
+
+/* Construtores*/
+
+Matrix::Matrix(size_t ncol, size_t nlin): n(ncol), m(nlin) {
+  
+  mat = new double*[m];
+  for (int i = 0; i < m; i++)
+    {
+      mat[i] = new double[n];
+    }
+}
+
+Matrix::Matrix(const Matrix& M)
+{
+  n = M.n;
+  m = M.m;
+
+  mat = new double*[m];
+  for (int i = 0; i < m; i++)
+    {
+      mat[i] = new double[n];
+    }
+
+  for (int i = 0; i < m; i++)
+    {
+      for (int j = 0; j < n; j++)
+	{
+	  mat[i][j] = M.mat[i][j];
+	}
+    }
+}
+
+/* Destrutor */
+
+Matrix::~Matrix()
+{
+  for (int i = 0; i < m; i++)
+    {
+      delete[] mat[i];
+    }
+  delete[] mat;
+}
+
+/* Funções */
+
+void Matrix::set(unsigned i, unsigned j, double a)
+{
+  if (((i-1) >= m) || ((j-1) >= n) || ((i-1) < 0) || ((j-1) < 0))
+    {
+      cout << "A matriz em questão não tem esse elemento." << endl;
+      cout << "Tente novamente" << endl;
+      exit(EXIT_FAILURE);
+    }
+  else
+    {
+      mat[i-1][j-1] = a;
+    }
+}
+
+size_t Matrix::ncol() const {return n;}
+size_t Matrix::nlin() const {return m;}
+
+void Matrix::resize(unsigned new_n, unsigned new_m)
+{
+  for (int i = 0; i < m; i++){
+    delete[] mat[i];}
+  delete[] mat;
+  n = new_n;
+  m = new_m;
+  mat = new double*[m];
+  for (int i = 0; i < m; i++)
+    {
+      mat[i] = new double[n];
+    }
+}
+
+/* Overload de Operadores */
+
+Matrix& Matrix::operator=(const Matrix& M)
+{
+  if (this == &M){
+    return *this;
+  }
+  else{
+    if ((m != M.m) || (n != M.n))
+      {
+	this->resize(M.n, M.m);
+      }
+    for (int i = 0; i < m; i++){
+      for (int j = 0; j < n; j++){
+	mat[i][j] = M.mat[i][j];
+      }
+    }
+    return *this;
+  }
+}
+
+Matrix& Matrix::operator=(double a)
+{
+  for (int i = 0; i < m; i++){
+    for (int j = 0; j < n; j++){
+      mat[i][j] = a;
+    }
+  }
+
+  return *this;
+}
+
+Matrix Matrix::operator+(const Matrix& M)
+{
+  if ((n == M.n) && (m == M.m)){
+    Matrix result(n, m); // A matriz resultante tem o número de colunas da 2º e o número de linhas da 1º
+    result = 0;
+    for (int i = 0; i < result.m; i++){
+      for (int j = 0; j < result.n; j++){
+	result.mat[i][j] = mat[i][j] + M.mat[i][j];
+      }
+    }
+    return result;
+  }
+  else{
+    cout << "Matrizes não somáveis!" << endl;
+    exit(EXIT_FAILURE);
+  }
+}
+
+Matrix Matrix::operator*(const Matrix& M)
+{
+  /* Multiplicação legal? */
+  if (n == M.m){
+    Matrix result(M.n, m); // A matriz resultante tem o número de colunas da 2º e o número de linhas da 1º
+    result = 0;
+    for (int i = 0; i < result.m; i++){
+      for (int j = 0; j < result.n; j++){
+	for (int k = 0; k < n; k++){
+	  result.mat[i][j] += mat[i][k] * M.mat[k][j]; 
+	}
+      }
+    }
+    
+    return result;
+  }
+
+  else{
+    cout << "Multiplicação ilegal. A dimensão das matrizes não permite multiplicação!" << endl;
+    exit(EXIT_FAILURE);
+  }
+  
+}
+
+double Matrix::operator()(unsigned i, unsigned j) const
+{
+   if (((i-1) >= m) || ((j-1) >= n) || ((i-1) < 0) || ((j-1) < 0))
+    {
+      cout << "A matriz em questão não tem esse elemento." << endl;
+      cout << "Não foi possível aceder ao valor dessa casa" << endl;
+      exit(EXIT_FAILURE);
+    }
+   else{
+     return mat[i-1][j-1];
+   }
+}
+double& Matrix::operator()(unsigned i, unsigned j)
+{
+  if (((i-1) >= m) || ((j-1) >= n) || ((i-1) < 0) || ((j-1) < 0))
+    {
+      cout << "A matriz em questão não tem esse elemento." << endl;
+      cout << "Não foi possível aceder ao valor dessa casa" << endl;
+      exit(EXIT_FAILURE);
+    }
+   else{
+     return mat[i-1][j-1];
+   }
+}
+
+ostream& operator<<(ostream& out, const Matrix & r ) {
+  cout << endl;
+  for( unsigned i = 1; i <= r.nlin(); ++i ){
+    for (unsigned j = 1; j <= r.ncol(); ++j)
+      {
+	out << r(i,j) << " ";
+      }
+    out << "\n";
+  }
+  cout << endl;
+  return out;
+}
