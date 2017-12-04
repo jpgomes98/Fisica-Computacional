@@ -88,7 +88,8 @@ int main ()
       P2d.mat[0][v]=v_3;
       P2d.mat[P2d.n_pos-1][v]=v_4;
     }
-    
+
+  normaV();
   while(normaV<0.001)
     {
       for(int i1=1; i1<P2d.n_pos-1; i1++)
