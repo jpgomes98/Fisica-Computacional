@@ -15,7 +15,7 @@ int main()
   Matrix T(5,6);
   Matrix G(3, 3);
   Matrix G_inv(3, 3);
-  Matrix v(1, 3);
+  Matrix v(3, 1);
 
   ifstream input("matvec.dat");
   ofstream output("resultados.dat");
@@ -29,8 +29,8 @@ int main()
     for (int j = 1; j <= G.ncol(); j++){
       G.set(i, j, floor(((double) rand() / (double) RAND_MAX) * 10)); 
     }
-  }
-  */
+    }*/
+  
   
   for (int i = 1; i <= v.nlin(); i++){
     v.set(i, 1, floor(((double) rand() / (double) RAND_MAX) * 10));
@@ -51,6 +51,10 @@ int main()
   output << G_inv;
   cout << "Vector v:" << endl;
   cout << v;
+
+  cout << "Solve linear system represented by Gx = v" << endl;
+  cout << "x: " << endl;;
+  cout << solve(G, v);
 
   T.resize(3,3);
   T = 5;
@@ -74,6 +78,6 @@ int main()
   cout << "[G⁻¹] x [G] = Id" << endl;
   cout << (G*G_inv);
 
-
+ 
   return 0;
 }
