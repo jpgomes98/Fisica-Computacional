@@ -83,7 +83,7 @@ int main()
 	}
       }
     }
-
+  
   /****************************************************************/
 
   cout << "Matrix G:" << endl;
@@ -115,6 +115,8 @@ int main()
   cout << "Eigenvalues of G: ";
   cout << eig;
   /*********************************************/
+
+  secularEq(G);
   
   cout << "< u , v > = " << dot(u, v) << "\n" << endl;
   //cout << "u x v = " << cross(u, v);

@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <string>
+#include <ctime>
 #include "dirent.h"
 #include "Matrix.h"
 
@@ -639,6 +640,32 @@ Matrix eigenspace(Matrix& M, Matrix& eigenvalues, const Matrix& guess)
   return eigenvectors;
 }
 
+void secularEq(Matrix& M)
+{
+  ofstream out_secular("secular.dat");
+  
+  Matrix A(M);
+  Matrix Id(M.ncol(), M.nlin());
+  double det;
+  double eps = 1e-9;
+  double h = 0.1;
+  double a = -20;
+  double b = 20;
+  double x;
+
+  x = a;
+  Id = 0;
+  for (int i = 1; i <= Id.nlin(); i++){
+    Id.set(i, i, 1);
+  }
+
+  while (x < b){
+    det = (A - x * Id).findDet();
+    x += h;
+    out_secular << x << " " << det << endl;
+  }
+  
+}
 
 
 

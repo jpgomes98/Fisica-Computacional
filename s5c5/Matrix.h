@@ -56,6 +56,7 @@ class Matrix{
   
   friend Matrix eigenspace(Matrix& M, Matrix& eigenvalues, const Matrix& guess);
   // determinar o espaço próprio
+  friend void secularEq(Matrix& M);
  
 };
 
