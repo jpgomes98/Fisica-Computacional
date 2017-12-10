@@ -10,7 +10,7 @@ print "Inicializando o gnuplot..."
 
 set xrange [-5:5]
 set yrange [-0.2:0.2]
-set format y "%.1f"
+set format y "%.2f"
 set key box opaque
 
 #Estilos e títulos

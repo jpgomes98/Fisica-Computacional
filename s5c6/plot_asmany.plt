@@ -31,7 +31,7 @@ set title "{/:Bold=15 Oscilador Harmónico Quântico}"
 @Alabels	
 
 do for [i=0:(ARG1-1)] {
-	outfile = sprintf('many_quantumstates/quantumOsc_n%d', i)
+	outfile = sprintf('many_quantumstates/quantumOsc_n%d.png', i)
 	set output outfile	
 	#plot myFile using 1:($2+i) with @style4	
 	plot myFile using 1:(column(2 + i)) with @style4

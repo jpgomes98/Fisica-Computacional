@@ -85,16 +85,23 @@ int main()
 
   /************* Resolver a equação de Schrödinger para um oscilador quântico ****************/
 
-  cout << "*** Resolver a equação de Schrödinger para um oscilador quântico ***" << "\n\n";
+  cout << "*** Resolver a equação de Schrödinger para um oscilador quântico ***" << "\n";
   cout << "Introduza a discretização do espaço pretendida: ";
   cin >> N;
   cout << "Introduza a fronteira do espaço a estudar: ";
   cin >> limite;
   cout << "Pretende imprimir muitos estados (Sim - 1; Não - 0): ";
   cin >> plot_y_n;
+
+  /* Impedir que o programa calcule todos os vetores próprios */
+  if (plot_y_n){
   cout << "Introduza o número de soluções que pretende: ";
   cin >> nsol;
-  /* Impedir que o programa calcule todos os vetores próprios */
+  }
+  else{
+    cout << "O programa irá produzir gráficos dos 6 primeiros níveis de energia permitidos." << endl;
+    nsol = 6;
+  }
   
   /* Setup do output */
   sstm << fname << N << fend;
@@ -102,7 +109,7 @@ int main()
   output.open(complete.c_str());
   /*******************/
   
-  Energy.resize(1, N);
+  Energy.resize(1, nsol);
   grid.resize(1, N);
   cout << "Parâmetros usados: " << endl;
   cout << " -> ħ = 1\n -> m = 1\n -> k = 1\n\n";
@@ -135,8 +142,8 @@ int main()
 
   output.close();
 
-  /* Elaborar o script gnuplot para o caso em que o utilizador se limita a querer 6 estados na mesma imagem (0) ou 
-   no caso em que o utilizador pretende muitos estados em múltiplos ficheiros */
+  /* Elaborar o script gnuplot para o caso em que o utilizador se limita a querer 6 estados na mesma     imagem (0) ou 
+     no caso em que o utilizador pretende muitos estados em múltiplos ficheiros */
 
   if (plot_y_n){
     gstream << plot_asmany << nsol;
@@ -165,6 +172,7 @@ int main()
   }
   else{
     cout << "gnuplot invocado com sucesso!" <<endl;
+    cout << "Verifique os gráficos produzidos" << endl;
     }
   
   return 0;
