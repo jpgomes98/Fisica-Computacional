@@ -20,6 +20,7 @@ class Matrix{
   void    set(unsigned i, unsigned j, double a);  // definir o valor da casa ij da matriz para a
   size_t  ncol() const;                           // output do numero de colunas, n
   size_t  nlin() const;                           // output do numero de linhas, m
+  void    vec_in(unsigned j, const Matrix& v_in); // introduzir um vetor inteiro na matriz
   Matrix  vec_out(unsigned j) const;              // extrair o vetor j da matriz
   void    resize(unsigned new_n, unsigned new_m); // redimensionalizar a matriz
   double  findDet();                              // calcular e definir o determinante. Imprime-o.
@@ -54,8 +55,9 @@ class Matrix{
   
   /**************************************/
   
-  friend Matrix eigenspace(Matrix& M, Matrix& eigenvalues, const Matrix& guess);
+  friend Matrix eigenspace(Matrix& M, Matrix& eigenvalues, const Matrix& guess, int stop);
   // determinar o espaço próprio
+  friend void secularEq(Matrix& M);                           // resolver a eq. secular da matriz
  
 };
 
@@ -63,5 +65,11 @@ class Matrix{
 
 bool checkDir(const string& toRead);
 // Função para testar a presença de certos ficheiros necessários à execução
+
+double quantumOsc(double k, double x);
+
+/* Resolver a Eq. Schrodinger Independente do Tempo */
+Matrix solveSchrodinger(double (&V_x)(double, double), Matrix& Energy, Matrix& X, int npos, double lim, int stop, istream& parametros);
+
 
 #endif

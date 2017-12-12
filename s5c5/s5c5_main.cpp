@@ -25,6 +25,13 @@ int main()
   Matrix A(2, 4);
   Matrix At(1, 1);
 
+
+  /* TISE - solução numa caixa de potencial */
+  Matrix Energy(1, 1);
+  Matrix waveFunc(1, 1);
+  int N;
+  double limite;
+  
   string toRead("matvec.dat");
   string toWrite("resultados.dat");
 
@@ -83,7 +90,7 @@ int main()
 	}
       }
     }
-
+  
   /****************************************************************/
 
   cout << "Matrix G:" << endl;
@@ -109,12 +116,10 @@ int main()
   cout << u;
   cout << "λmax_vector (G) = " << G.bigEigenvec(u);
   
-  /**********************************************/
   cout << "Eigenspace of G spanned by:";
   cout << eigenspace(G, eig, v);
   cout << "Eigenvalues of G: ";
   cout << eig;
-  /*********************************************/
   
   cout << "< u , v > = " << dot(u, v) << "\n" << endl;
   //cout << "u x v = " << cross(u, v);
@@ -122,8 +127,22 @@ int main()
   cout << "[G⁻¹] x [G] = Id" << endl;
   cout << (G*G_inv);
 
-  cout<< u.normalize()<<endl;
+  /************* Resolver a equação de Schrödinger para um oscilador quântico ****************/
 
- 
+  cout << "*** Resolver a equação de Schrödinger para um oscilador quântico ***" << "\n\n";
+  cout << "Introduza a discretização do espaço pretendida: ";
+  cin >> N;
+  cout << "Introduza a fronteira do espaço a estudar: ";
+  cin >> limite;
+  Energy.resize(1, N);
+  cout << "Parâmetros usados: " << endl;
+  cout << " -> ħ = 1\n -> m = 1\n -> k = 1\n\n";
+  cout << "A resolver... Terminado." << endl;
+  waveFunc = solveSchrodinger(quantumOsc, Energy, N, limite);
+  cout << "Φ: ";
+  cout << waveFunc;
+  cout << "Energia: ";
+  cout << Energy;
+  
   return 0;
 }

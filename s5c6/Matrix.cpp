@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <string>
+#include <ctime>
 #include "dirent.h"
 #include "Matrix.h"
 
@@ -73,6 +74,25 @@ void Matrix::set(unsigned i, unsigned j, double a)
 
 size_t Matrix::ncol() const {return n;}
 size_t Matrix::nlin() const {return m;}
+
+void Matrix::vec_in(unsigned j, const Matrix& v_in)
+{
+  if ((j < 1) || (j > n)){
+    cout << "A matriz em questão não tem esse elemento." << endl;
+    cout << "Tente novamente" << endl;
+    exit(EXIT_FAILURE);
+  }
+  else if ((v_in.ncol() != 1) || (v_in.nlin() > m)){
+    cout << "Vetor de dimensões não compatíveis para juntar à matriz." << endl;
+    cout << "Só são aceites vetores coluna" << endl;
+    exit(EXIT_FAILURE);
+  }
+  else{
+    for (int i = 1; i <= m; i++){
+      mat[i-1][j-1] = v_in(i, 1);
+    }
+  }
+}
 
 Matrix Matrix::vec_out(unsigned j) const
 {
@@ -282,7 +302,7 @@ bool Matrix::isSymmetric()
     
     for(int i = 0; i < m; i++){
       for(int j = 0; j < n; j++){
-	if ((i != j) && (mat[i][j] != Copy.mat[i][j])){
+	if ((i != j) && ((mat[i][j]- Copy.mat[i][j]) > 1e-10)){
 	  check = 1;
 	  break;
 	}
@@ -560,7 +580,7 @@ Matrix cross(const Matrix& A, const Matrix& B)
 /* The finite-dimensional spectral theorem says that any Hermitian matrix can be diagonalized by a unitary matrix, and that the resulting diagonal matrix has only real entries. This implies that all eigenvalues of a Hermitian matrix A with dimension n are real, and that A has n linearly independent eigenvectors. Moreover, Hermitian matrix has orthogonal eigenvectors for distinct eigenvalues. Even if there are degenerate eigenvalues, it is always possible to find an orthogonal basis of Cn consisting of n eigenvectors of A. */
 
 
-Matrix eigenspace(Matrix& M, Matrix& eigenvalues, const Matrix& guess)
+Matrix eigenspace(Matrix& M, Matrix& eigenvalues, const Matrix& guess, int stop)
 {
   /* Inicializar a matriz dos vetores próprios */
   Matrix eigenvectors(M.ncol(), M.nlin());
@@ -581,7 +601,7 @@ Matrix eigenspace(Matrix& M, Matrix& eigenvalues, const Matrix& guess)
   
   if (M.isSymmetric() && ((eigenvalues.ncol() == 1))){
 
-    for (int i = 1; i <= M.ncol(); i++){
+    for (int i = 1; i <= stop; i++){
       dif = 10;
       V1 = guess;
       
@@ -639,6 +659,32 @@ Matrix eigenspace(Matrix& M, Matrix& eigenvalues, const Matrix& guess)
   return eigenvectors;
 }
 
+void secularEq(Matrix& M)
+{
+  ofstream out_secular("secular.dat");
+  
+  Matrix A(M);
+  Matrix Id(M.ncol(), M.nlin());
+  double det;
+  double eps = 1e-9;
+  double h = 0.1;
+  double a = -20;
+  double b = 20;
+  double x;
+
+  x = a;
+  Id = 0;
+  for (int i = 1; i <= Id.nlin(); i++){
+    Id.set(i, i, 1);
+  }
+
+  while (x < b){
+    det = (A - x * Id).findDet();
+    x += h;
+    out_secular << x << " " << det << endl;
+  }
+  
+}
 
 
 
@@ -673,6 +719,84 @@ bool checkDir(const string& toRead)
   
 }
 
+double quantumOsc(double k, double x)
+{
+  return 0.5 * k * (x*x);
+}
+
+Matrix solveSchrodinger(double (&V_x)(double, double), Matrix& Energy, Matrix& X, int npos, double lim, int stop, istream& parametros)
+{
+  /* Resolver H*phi = E*phi */
+  
+  Matrix H(npos, npos);
+  Matrix M(npos, npos);
+
+  /* Guardar os valores próprios de M = H⁻¹ */
+  Matrix invEnergy(Energy);
+
+  /* Rede 1D */
+  Matrix guess(1, npos);
+
+  /* Função de onda solução */
+  Matrix phi(npos, npos);
+  
+  /* Parâmetros físicos */
+  double h_bar;
+  double m;
+  double k;
+
+  parametros >> h_bar >> m >> k;
+
+  /* Parâmetros computacionais */
+  double step = 2 * lim / (npos - 1); // step de rede
+  
+  /* Definir a rede unidimensional */
+  for (int i = 1; i <= X.nlin(); i++){
+    X.set(i, 1, (-1) * lim + (i - 1) * step);
+  }
+
+  double par = (h_bar * h_bar) / (2 * m * step * step); 
+
+  /* Definir o vetor guess inicial */
+  for (int i = 1; i <= guess.nlin(); i++){
+    guess.set(i, 1, floor(((double) rand() / (double) RAND_MAX) * 10));
+  }
+
+  /* Definir a matriz hamiltoniana */
+  H = 0;
+
+  for (int i = 1; i <= H.nlin(); i++){
+    for (int j = (i - 1); j < (i + 2); j++){
+      if ((i == 1) && (j == 0)){
+	j++;
+      }
+
+      if ((i == H.nlin()) && (j == H.ncol() + 1)){
+	break;
+      }
+	
+      if (i == j){
+	H.set(i, i, 2 * par + V_x(k, X(i, 1)));
+      }
+      else{
+	H.set(i, j, (-1) * par);
+      }
+    }
+  }
+
+  cout << X;
+  
+  /*********** Resolver de facto a eq. ***********/
+
+  M = H.inverse();                                 // Usar a matriz inversa para o cálculo
+  phi = eigenspace(M, invEnergy, guess, stop);     // Determinar os vetores função onda, phi
+  /* Update: agora é possível o utilizador especificar quantas soluções quer calcular */
+  for (int i = 1; i <= invEnergy.nlin(); i++){
+    Energy.set(i, 1, (1. / (invEnergy(i, 1))));
+    }
+  
+  return phi;
+}
 
 
 

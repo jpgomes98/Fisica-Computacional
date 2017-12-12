@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <string>
+#include <ctime>
 #include "dirent.h"
 #include "Matrix.h"
 
@@ -282,7 +283,7 @@ bool Matrix::isSymmetric()
     
     for(int i = 0; i < m; i++){
       for(int j = 0; j < n; j++){
-	if ((i != j) && (mat[i][j] != Copy.mat[i][j])){
+	if ((i != j) && ((mat[i][j]- Copy.mat[i][j]) > 1e-10)){
 	  check = 1;
 	  break;
 	}
@@ -639,6 +640,32 @@ Matrix eigenspace(Matrix& M, Matrix& eigenvalues, const Matrix& guess)
   return eigenvectors;
 }
 
+void secularEq(Matrix& M)
+{
+  ofstream out_secular("secular.dat");
+  
+  Matrix A(M);
+  Matrix Id(M.ncol(), M.nlin());
+  double det;
+  double eps = 1e-9;
+  double h = 0.1;
+  double a = -20;
+  double b = 20;
+  double x;
+
+  x = a;
+  Id = 0;
+  for (int i = 1; i <= Id.nlin(); i++){
+    Id.set(i, i, 1);
+  }
+
+  while (x < b){
+    det = (A - x * Id).findDet();
+    x += h;
+    out_secular << x << " " << det << endl;
+  }
+  
+}
 
 
 
@@ -673,6 +700,83 @@ bool checkDir(const string& toRead)
   
 }
 
+double quantumOsc(double x)
+{
+  double k = 1; // coeficiente elástico
+  return 0.5 * k * (x*x);
+}
+
+Matrix solveSchrodinger(double (&V_x)(double), Matrix& Energy, int npos, double lim)
+{
+  /* Resolver H*phi = E*phi */
+  
+  Matrix H(npos, npos);
+  Matrix M(npos, npos);
+
+  /* Guardar os valores próprios de M = H⁻¹ */
+
+  Matrix invEnergy(Energy);
+
+  /* Rede 1D*/
+  Matrix X(1, npos);
+  Matrix guess(1, npos);
+
+  /* Função de onda solução */
+  Matrix phi(npos, npos);
+  
+  /* Parâmetros físicos */
+  double h_bar = 1;
+  double m = 1;
+
+  /* Parâmetros computacionais */
+  double step = 2 * lim / (npos - 1); // step de rede
+  
+  /* Definir a rede unidimensional */
+  for (int i = 1; i <= X.nlin(); i++){
+    X.set(i, 1, (-1) * lim + (i - 1) * step);
+  }
+
+  double par = (h_bar * h_bar) / (2 * m * step * step); 
+
+  /* Definir o vetor guess inicial */
+  for (int i = 1; i <= guess.nlin(); i++){
+    guess.set(i, 1, floor(((double) rand() / (double) RAND_MAX) * 10));
+  }
+
+  /* Definir a matriz hamiltoniana */
+  H = 0;
+
+  for (int i = 1; i <= H.nlin(); i++){
+    for (int j = (i - 1); j < (i + 2); j++){
+      if ((i == 1) && (j == 0)){
+	j++;
+      }
+
+      if ((i == H.nlin()) && (j == H.ncol() + 1)){
+	break;
+      }
+	
+      if (i == j){
+	H.set(i, i, 2 * par + V_x(X(i, 1)));
+      }
+      else{
+	H.set(i, j, (-1) * par);
+      }
+    }
+  }
+
+  cout << H;
+  cout << X;
+  /*********** Resolver de facto a eq. ***********/
+
+  M = H.inverse();                           // Usar a matriz inversa para o cálculo
+  phi = eigenspace(M, invEnergy, guess);     // Determinar os vetores função onda, phi
+  for (int i = 1; i <= invEnergy.nlin(); i++){
+    Energy.set(i, 1, (1. / (invEnergy(i, 1))));
+    }
+  
+  return phi;
+}
 
 
 

@@ -56,6 +56,7 @@ class Matrix{
   
   friend Matrix eigenspace(Matrix& M, Matrix& eigenvalues, const Matrix& guess);
   // determinar o espaço próprio
+  friend void secularEq(Matrix& M);                           // resolver a eq. secular da matriz
  
 };
 
@@ -63,5 +64,11 @@ class Matrix{
 
 bool checkDir(const string& toRead);
 // Função para testar a presença de certos ficheiros necessários à execução
+
+double quantumOsc(double x);
+
+/* Resolver a Eq. Schrodinger Independente do Tempo */
+Matrix solveSchrodinger(double (&V_x)(double), Matrix& Energy, int npos, double lim);
+
 
 #endif
