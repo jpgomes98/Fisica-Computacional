@@ -21,7 +21,7 @@ Matrix::Matrix(size_t ncol, size_t nlin): n(ncol), m(nlin) {
 
 Matrix::Matrix(const Matrix& M)
 {
-  n = M.n;  
+  n = M.n;
   m = M.m;
 
   mat = new double*[m];

@@ -110,13 +110,11 @@ int main()
   cout << "Solve linear system represented by Gx = v" << endl;
   cout << "x: " << endl;;
   cout << solve(G, v);
-
-
+  
+  
   cout << "[G⁻¹] x [G] = Id" << endl;
   cout << (G*G_inv);
-
-  cout<< u.normalize()<<endl;
-
- 
+  
+  
   return 0;
 }
