@@ -6,11 +6,10 @@ set print "-"
 set macros
 
 print "Inicializando o gnuplot..."
-print "Imprimir todos os estados quânticos disponíveis..."
 
-set xrange [-5:5]
+set xrange [-10:10]
 set yrange [-0.2:0.2]
-set format y "%.2f"
+set format y "%.3f"
 set key box opaque
 
 #Estilos e títulos
@@ -23,22 +22,21 @@ style5 = "points lt 2 lw 0.5 title \"n = 4\""
 style6 = "points lt 5 lw 0.5 title \"n = 5\""
 
 Alabels = "set xlabel 'x'; set ylabel '{/Symbol f}'"
-myFile =  'schrodinger_1000.dat' 
+myFile =  'schrodinger_10000.dat' 
 
-
+print "Imprimir todos os estados quânticos disponíveis..."
 print "A preparar impressão..."
 set title "{/:Bold=15 Oscilador Harmónico Quântico}"
 @Alabels	
-
-do for [i=0:(ARG1-1)] {
-	outfile = sprintf('many_quantumstates/quantumOsc_n%d.png', i)
-	set output outfile	
-	#plot myFile using 1:($2+i) with @style4	
-	plot myFile using 1:(column(2 + i)) with @style4
-}
+	do for [i=0:(ARG1-1)] {
+		outfile = sprintf('many_quantumstates/quantumOsc_n%d.png', i)
+		set output outfile	
+		#plot myFile using 1:($2+i) with @style4	
+		plot myFile using 1:(column(2 + i)) with @style4
+	}
 
 
 print "Sucesso! Procure os ficheiros na pasta 'many_quantumstates'"
 
 pause 1
-
+	

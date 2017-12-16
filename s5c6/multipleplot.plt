@@ -8,7 +8,7 @@ set macros
 
 print "Inicializando o gnuplot..."
 
-set xrange [-5:5]
+set xrange [-10:10]
 set yrange [-0.2:0.2]
 set format y "%.2f"
 set key box opaque
@@ -25,7 +25,7 @@ style6 = "points lt 5 lw 0.5 title \"n = 5\""
 Alabels = "set xlabel 'x'; set ylabel '{/Symbol f}'"
 
 filename = ""
-myFile =  'schrodinger_1000.dat' 
+myFile =  'schrodinger_5000.dat' 
 #system(ls schrodinger_*.dat)
 #print filename
 

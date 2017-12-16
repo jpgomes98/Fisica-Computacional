@@ -19,11 +19,12 @@ int main()
   bool plot_y_n;
   int systemReturn;
 
-  /* TISE - solução numa caixa de potencial 1D (grid) */
+  /* TISE - solução para um espaço infinito 1D (grid) */
   Matrix grid(1, 1);
   Matrix Energy(1, 1);
   Matrix waveFunc(1, 1);
   Matrix auxWave(waveFunc);
+  Matrix CheckId(3,3);
   int N;
   double limite;
   int nsol; // nº de soluções a calcular
@@ -111,12 +112,15 @@ int main()
   
   Energy.resize(1, nsol);
   grid.resize(1, N);
+  Energy = 0;
+  grid = 0;
   cout << "Parâmetros usados: " << endl;
   cout << " -> ħ = 1\n -> m = 1\n -> k = 1\n\n";
   cout << "A resolver..." << endl;
   auxWave = solveSchrodinger(quantumOsc, Energy, grid, N, limite, nsol, input);
   /* Resolver a eq. aos vetores e valores própios, usando o potencial harmónico */
   waveFunc.resize(nsol, auxWave.nlin());
+  waveFunc = 0;
   for (int j = 1; j <= nsol; j++){
     waveFunc.vec_in(j, auxWave.vec_out(j)); /* Obter os 3 menores valores próprios */
   }
@@ -158,7 +162,15 @@ int main()
   gstream << "\n";
   gnuplot = gstream.str();
   /*****************************/
-  
+
+  CheckId = 2;
+  for (int i = 1; i <= 3; i++){
+    for (int j = 1; j <= 3; j++){
+      CheckId.set(i, j, dot(waveFunc.vec_out(i), waveFunc.vec_out(j)));
+    }
+  }
+
+  cout << CheckId;
   
   /*cout << "Φ_3menores: ";
     cout << waveFunc;*/

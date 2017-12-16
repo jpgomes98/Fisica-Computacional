@@ -7,7 +7,7 @@
 #include "dirent.h"
 #include "Matrix.h"
 
-#define THRESHOLD 1e-8
+#define THRESHOLD 1e-12
 
 using namespace std;
 
@@ -587,12 +587,15 @@ Matrix eigenspace(Matrix& M, Matrix& eigenvalues, const Matrix& guess, int stop)
   eigenvectors = 0;
 
   double eigen = 0;
-  double eps = 1e-9;
+  double eps = 1e-13;
   double dif = 10;
 
   // Vetores Coluna para os cálculos intermédios
   Matrix V1(1, M.nlin());
   Matrix V2(1, M.nlin());
+  Matrix aux1(1, 1);
+  Matrix aux2(1, 1);/* Matrizes auxiliares para cálculo dos valores próprios */
+  Matrix currentVec(1, M.nlin());
 
   /* obter o espaço próprio gerado pela matriz M, calculando os vetores próprios um de cada vez do maior ao mais pequeno:
   -> Escreve os valores próprios associados a cada vetor próprio determinado no vetor coluna eigenvalues;
@@ -619,7 +622,14 @@ Matrix eigenspace(Matrix& M, Matrix& eigenvalues, const Matrix& guess, int stop)
       
       while(abs(dif) >= eps){
 	V2 = M * V1;	  
-	eigen = (V2(M.nlin(), 1)) / (V1(M.nlin(), 1));
+
+	V2 = V2.normalize();
+	
+	/*
+	aux1 =  M * V2;
+	aux2 = V2.transpose() * aux1;
+	eigen = aux2(1,1);
+	*/
 	
 	/* Foge ao cálculo do maior vetor próprio */
 	if (i != 1){
@@ -629,7 +639,6 @@ Matrix eigenspace(Matrix& M, Matrix& eigenvalues, const Matrix& guess, int stop)
 	}
 	/*******************************************/
 	
-	V2 = V2.normalize();
 	dif = abs(V2(M.nlin(), 1)) - abs(V1(M.nlin(), 1));
 	
 	/*há aqui alguma aldrabice, porque a matriz, sendo simétrica, está constantemente 
@@ -640,14 +649,21 @@ Matrix eigenspace(Matrix& M, Matrix& eigenvalues, const Matrix& guess, int stop)
 	
 	V1 = V2;
       }
-      eigenvalues.set(i, 1, eigen);
+      //eigenvalues.set(i, 1, eigen);
       for(int k = 1; k <= eigenvectors.nlin(); k++){
 	eigenvectors.set(k, i, V2(k, 1));
       }
     }
+
+    for (int i = 1; i <= stop; i++){
+      currentVec = eigenvectors.vec_out(i);
+      aux1 =  M * currentVec;
+      aux2 = currentVec.transpose() * aux1;
+      eigenvalues.set(i, 1, aux2(1,1));
+    }
   }
   
-  else if((eigenvalues.nlin() != M.nlin()) && (eigenvalues.ncol() != 1)){
+  else if((eigenvalues.nlin() != stop) && (eigenvalues.ncol() != 1)){
     cout << "Forneça um vetor coluna para guardar os valores próprios cujo nº de linhas coincida com a dimensão da matriz." <<endl;
     exit(EXIT_FAILURE);
   }
@@ -748,14 +764,14 @@ Matrix solveSchrodinger(double (&V_x)(double, double), Matrix& Energy, Matrix& X
   parametros >> h_bar >> m >> k;
 
   /* Parâmetros computacionais */
-  double step = 2 * lim / (npos - 1); // step de rede
+  double step = 2. * lim / (npos - 1); // step de rede
   
   /* Definir a rede unidimensional */
   for (int i = 1; i <= X.nlin(); i++){
     X.set(i, 1, (-1) * lim + (i - 1) * step);
   }
 
-  double par = (h_bar * h_bar) / (2 * m * step * step); 
+  double par = (h_bar * h_bar) / (2. * m * step * step); 
 
   /* Definir o vetor guess inicial */
   for (int i = 1; i <= guess.nlin(); i++){
@@ -783,8 +799,6 @@ Matrix solveSchrodinger(double (&V_x)(double, double), Matrix& Energy, Matrix& X
       }
     }
   }
-
-  cout << X;
   
   /*********** Resolver de facto a eq. ***********/
 
@@ -792,7 +806,7 @@ Matrix solveSchrodinger(double (&V_x)(double, double), Matrix& Energy, Matrix& X
   phi = eigenspace(M, invEnergy, guess, stop);     // Determinar os vetores função onda, phi
   /* Update: agora é possível o utilizador especificar quantas soluções quer calcular */
   for (int i = 1; i <= invEnergy.nlin(); i++){
-    Energy.set(i, 1, (1. / (invEnergy(i, 1))));
+    Energy.set(i, 1, 1./(invEnergy(i, 1)));
     }
   
   return phi;
