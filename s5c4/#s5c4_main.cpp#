@@ -12,16 +12,13 @@ using namespace std;
 
 int main()
 {
-  /* Aux */
   double get;
   int y_n;
-
-  /* Declarações de vetores e matrizes a testar */
-  Matrix G(4, 4);
-  Matrix G_inv(4, 4);
-  Matrix eig(1,4);      // vetor para guardar os valores próprios
-  Matrix v(1, 4);
-  Matrix u(1, 4);
+  
+  Matrix G(3, 3);
+  Matrix G_inv(3, 3);
+  Matrix v(1, 3);
+  Matrix u(1, 3);
   Matrix A(2, 4);
   Matrix At(1, 1);
 
@@ -33,7 +30,8 @@ int main()
   
   srand(time(NULL));
   
-  /* Definir os valores da matriz A e do vetor v - aleatório */
+  
+  /* Definir os valores da matriz A - aleatório */
   
   for (int i = 1; i <= A.nlin(); i++){
     for (int j = 1; j <= A.ncol(); j++){
@@ -88,16 +86,14 @@ int main()
 
   cout << "Matrix G:" << endl;
   cout << G;
-  cout << "Is G symmetric?: " << G.isSymmetric() << "\n" << endl; 
-  cout << "det(G): " << G.findDet() << "\n" << endl;
-  //cout << "Vetor da coluna 2 de G:" << G.vec_out(2);
+  cout << "det(G): " << G.findDet() << endl;;
   G_inv = G.inverse();
   cout << "Matrix G⁻¹:" << endl;
   cout << G_inv;
   output << G_inv;
   cout << "Matrix A:" << endl;
   cout << A;
-  cout << "det(A): " << A.findDet() << "\n" << endl;
+  cout << "det(A): " << A.findDet() << endl;
   cout << "Let's transpose A..." << endl;
   At = A.transpose();
   cout << At;
@@ -107,23 +103,18 @@ int main()
   cout << v;
   cout << "Vector u:" << endl;
   cout << u;
-  cout << "λmax_vector (G) = " << G.bigEigenvec(u);
-  
-  /**********************************************/
-  cout << "Eigenspace of G spanned by:";
-  cout << eigenspace(G, eig, v);
-  cout << "Eigenvalues of G: ";
-  cout << eig;
-  /*********************************************/
-  
+  cout << "λ(G) = " << G.eigenvalue(u) << "\n" << endl;
   cout << "< u , v > = " << dot(u, v) << "\n" << endl;
-  //cout << "u x v = " << cross(u, v);
+  cout << "u x v = " << cross(u, v);
 
+  cout << "Solve linear system represented by Gx = v" << endl;
+  cout << "x: " << endl;;
+  cout << solve(G, v);
+  
+  
   cout << "[G⁻¹] x [G] = Id" << endl;
   cout << (G*G_inv);
-
-  cout<< u.normalize()<<endl;
-
- 
+  
+  
   return 0;
 }
